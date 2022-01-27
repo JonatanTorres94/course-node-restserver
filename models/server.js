@@ -1,5 +1,6 @@
 const express = require('express')
-var cors = require('cors')
+var cors = require('cors');
+const { dbConnection } = require('../database/config');
 
 //En esta seccion, vamos a hacer el server como clase no como lo manejamos en la clase del webServer, es lo mismo pero para tener otro orden y mas limpio el app.js
 class Server {
@@ -9,10 +10,17 @@ class Server {
         this.port = process.env.PORT;
         this.usersPath = '/api/users';
 
+        //Conectar DB
+        this.connectionDB();
+
         //Middlewares
         this.middlewares();
         //Routes of my application
         this.routes();
+    }
+
+    async connectionDB(){
+        await dbConnection();
     }
 
     middlewares (){
