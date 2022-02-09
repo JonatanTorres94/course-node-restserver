@@ -1,8 +1,15 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 const { usersGet, userPatch, userDelete, userPut, userPost } = require('../controllers/user');
-const { validateFields } = require('../middlewares/validate-fields');
 const { isRoleValid, isEmailvalid, existUserId } = require('../helpers/db-validators');
+const{
+    validateFields,
+    validateJWT,
+    isAdminRole,
+    haveRol
+} = require('../middlewares');
+
+
 
 
 const router = Router();
@@ -30,6 +37,9 @@ router.put('/:id', [
 ] ,userPut);
 
 router.delete('/:id', [
+    validateJWT,
+    //isAdminRole, // Este midel verifica si el usuario es admin y solo admin
+    haveRol('ADMIN_ROLE','SALE_ROLE'), // aca puedo indicar varios roles para que pueda realizar el delete
     check('id','It isn`t valid ID').isMongoId(),
     check('id').custom(existUserId),
     validateFields
